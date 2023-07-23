@@ -3,6 +3,9 @@ import {useState} from "react";
 import {Link, Route, Switch} from "react-router-dom";
 import CreatePermissions from "../../../Components/CreatePermissions/CreatePermissions";
 import ShowPermissions from "../../../Components/ShowPermissions/ShowPermissions";
+import ShowUsers from "../../../Components/ShowUsers/ShowUsers";
+import CreateUser from "../../../Components/CreateUser/CreateUser";
+import UserSelected from "../../../Components/UserSelected/UserSelected";
 
 type dropdownType = 'permissions' | 'users' | '';
 export default function Admin(): JSX.Element {
@@ -40,8 +43,8 @@ export default function Admin(): JSX.Element {
                         >Usuarios</span>
                         {showDropDawn && typeDropdawn === 'users' &&
                             <div className="dropdawn">
-                                <span>contenido link</span>
-                                <span>contenido link</span>
+                                <Link to="/home/admin/create-users">Crear usuarios</Link>
+                                <Link to="/home/admin/users">Ver usuarios</Link>
                                 <span>contenido link</span>
                                 <span>contenido link</span>
                             </div>
@@ -53,6 +56,9 @@ export default function Admin(): JSX.Element {
                 <Switch>
                     <Route path="/home/admin/create-permissions" children={<CreatePermissions/>}/>
                     <Route path="/home/admin/permissions" children={<ShowPermissions/>}/>
+                    <Route path="/home/admin/create-users" children={<CreateUser/>}/>
+                    <Route path="/home/admin/users" children={<ShowUsers/>}/>
+                    <Route path="/home/admin/user-selected/:id" children={<UserSelected/>}/>
                 </Switch>
             </div>
         </AdminStyled>

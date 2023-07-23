@@ -1,13 +1,13 @@
-import {Home2Styled} from "./Home2Styled";
+import {BudgetStyled} from "./BudgetStyled";
 
 
 
-export default function Home2(): JSX.Element {
+export default function Budget(): JSX.Element {
     
 
     return (
-        <Home2Styled>
-           
-        </Home2Styled>
+        <BudgetStyled>
+           <h1>soy el presupuesto</h1>
+        </BudgetStyled>
     );
 }

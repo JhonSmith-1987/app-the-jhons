@@ -1,56 +1,67 @@
-import {AuthStyled} from "./AuthStyled";
-import {useForm} from "react-hook-form";
-import {AuthModel, PostAuthModel} from "../../../domain/models/AuthModel";
-import {useAppDispatch, useAppSelector} from "../../../../Utils/Hooks";
-import {useHistory} from "react-router-dom";
-import {getAuthToken, getUserActive} from "../../../../Store/Actions/userAction";
+import {HomeStyled} from "./HomeStyled";
+import {Route, Switch} from "react-router-dom";
+import React, {useEffect} from "react";
+import Admin from "../../../modules/admin/presentation/screen/Admin/Admin";
+import {useAppDispatch, useAppSelector} from "../../../modules/Utils/Hooks";
+import SidebarHome from "../SidebarHome/SidebarHome";
+import Circle from "../Circle/Circle";
+import Budget from "../../../modules/Budget/Budget";
+import ProtectedRoute from "../../../modules/auth/shared/utils/ProtectedRoute";
+import {getUserActiveState} from "../../../modules/Store/Actions/userAction";
+import {getLocalStorageUserActive} from "../../../modules/auth/shared/utils/TokenLocalStorage";
+import ProtectedBudget from "../../../modules/auth/shared/utils/ProtectedBudget";
 
 
-export default function Auth(): JSX.Element {
 
-    const token = useAppSelector((state) => state.userState.token);
-    const isLoadindToken = useAppSelector((state) => state.userState.isLoadingAuthToken);
-    const users = useAppSelector((state) => state.userState.users);
-    const {register, handleSubmit, formState: {errors}, reset} = useForm<AuthModel>();
-    const history = useHistory();
+export default function Home(): JSX.Element {
+
     const dispatch = useAppDispatch();
+    const userActive = useAppSelector((state) => state.userState.userActive);
+    const token = useAppSelector((state) => state.userState.token);
 
-    function authSession(data: AuthModel) {
-        let resData:PostAuthModel = {
-            'email': data.email,
-            'password': data.password
-        }
-        dispatch(getAuthToken(resData)).then(() => {
-            if (token) {
-                dispatch(getUserActive(token)).then(() => {
-                    history.push('/admin');
-                })
-            }
-        });
-    }
-
-    const onSubmitAuth = (data:AuthModel) => authSession(data);
+    useEffect(() => {
+        dispatch(getUserActiveState(getLocalStorageUserActive()));
+    }, [dispatch]);
 
     return (
-        <AuthStyled>
-            {!isLoadindToken && (
-                <form onSubmit={handleSubmit(onSubmitAuth)}>
-                    <input {...register("email")} type="email" placeholder="email"/>
-                    <input {...register("password")} type="password" placeholder="password"/>
-                    <input {...register("confirm_password")} type="password" placeholder="repeat password"/>
-                    <input type="submit" value="Ingresar"/>
-                </form>
-            )}
-            {isLoadindToken && (
-                <div>Esta buscando datos</div>
-            )}
-            {users && users.map((user) => (
-                <div key={user.id}>
-                    <p>{user.name}</p>
-                    <p>{user.email}</p>
-                    <p>{user.user_type}</p>
+        <HomeStyled>
+            <div className="container-info-user">
+                <span>{userActive?.name}</span>
+                <img alt="logout" src="/Image/cerrar-sesion.png"/>
+            </div>
+            <div className="container-content">
+                <div className="sidebar">
+                    <Circle
+                        width={4}
+                        height={4}
+                        background="transparent"
+                        color="unset"
+                        border="2px solid #000"
+                        altImg="logo"
+                        src="/Image/mi_logo_deeckrite.png"
+                    />
+                    <SidebarHome/>
                 </div>
-            ))}
-        </AuthStyled>
+                <div className="content">
+                    <Switch>
+                        <ProtectedRoute
+                            isAuthenticated={!!userActive}
+                            userTypes={userActive?.user_type}
+                            redirectPath="/home"
+                            path="/home/admin"
+                            component={Admin}
+                        />
+                        {/*<Route path="/home/admin" children={<Admin/>}/>*/}
+                        <ProtectedBudget
+                            isAuthenticated={!!userActive}
+                            userTypes={userActive?.user_type}
+                            redirectPath="/home"
+                            path="/home/budget"
+                            component={Budget}
+                        />
+                    </Switch>
+                </div>
+            </div>
+        </HomeStyled>
     );
 }

@@ -1,31 +1,25 @@
-import {Home2Styled} from "./Home2Styled";
-import {useForm} from "react-hook-form";
+import {SidebarHomeStyled} from "./SidebarHomeStyled";
 import {useHistory} from "react-router-dom";
-import {useAppDispatch, useAppSelector} from "../../../modules/Utils/Hooks";
-import {useEffect} from "react";
-import {InfoUserModel} from "../../../modules/auth/domain/models/InfoUserModel";
+import {useAppSelector} from "../../../modules/Utils/Hooks";
 
-
-
-export default function Home2(): JSX.Element {
+type navigation = 'admin' | 'budget';
+export default function SidebarHome(): JSX.Element {
 
     const userActive = useAppSelector((state) => state.userState.userActive);
-
     const history = useHistory();
-    
-    function redirectTo(userActive:InfoUserModel | null) {
-        if (userActive !== null && userActive.user_type === 'admin') {
-            history.push('/admin');
-        }
+
+    function handleDirectionNavigation(directionNavigation:navigation) {
+        history.push(`/home/${directionNavigation}`);
     }
-    useEffect(() => {
-        redirectTo(userActive);
-    }, []);
-    
 
     return (
-        <Home2Styled>
-           
-        </Home2Styled>
+        <SidebarHomeStyled>
+           <ul>
+               {userActive && userActive.user_type === 'admin' &&
+                   <li onClick={() => handleDirectionNavigation('admin')}>Administrador</li>
+               }
+               <li onClick={() => handleDirectionNavigation('budget')}>Mi presupuesto</li>
+           </ul>
+        </SidebarHomeStyled>
     );
 }

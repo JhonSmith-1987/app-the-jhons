@@ -1,13 +1,11 @@
-import {Home2Styled} from "./Home2Styled";
+import {DropDawnAdminStyled} from "./DropDawnAdminStyled";
 
 
-
-export default function Home2(): JSX.Element {
-    
+export default function DropDawnAdmin(): JSX.Element {
 
     return (
-        <Home2Styled>
-           
-        </Home2Styled>
+        <DropDawnAdminStyled>
+            <span>este es un link</span>
+        </DropDawnAdminStyled>
     );
 }

@@ -1,5 +1,5 @@
 import styled from "styled-components";
 
-export const Home2Styled = styled.div`
+export const BudgetStyled = styled.div`
 
 `

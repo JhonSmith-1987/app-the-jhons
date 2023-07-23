@@ -1,18 +1,13 @@
-import {HomeStyled} from "./HomeStyled";
-import {useForm} from "react-hook-form";
-import {useHistory} from "react-router-dom";
-import {useAppDispatch} from "../../../modules/Utils/Hooks";
+import {Home2Styled} from "./Home2Styled";
 
 
 
-export default function Home(): JSX.Element {
-
-    const history = useHistory();
-    const dispatch = useAppDispatch();
+export default function Home2(): JSX.Element {
+    
 
     return (
-        <HomeStyled>
-
-        </HomeStyled>
+        <Home2Styled>
+           
+        </Home2Styled>
     );
 }

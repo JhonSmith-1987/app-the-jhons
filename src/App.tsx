@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
 import './App.css';
+import {Redirect, Route, Switch} from "react-router-dom";
+import Auth from "./modules/auth/presentation/screen/Auth/Auth";
+import Home from "./common/components/Home/Home";
+import {useAppDispatch, useAppSelector} from "./modules/Utils/Hooks";
+import {getLocalStorageUserActive} from "./modules/auth/shared/utils/TokenLocalStorage";
+import {getUserActiveState} from "./modules/Store/Actions/userAction";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const dispatch = useAppDispatch();
+    const userActive = useAppSelector((state) => state.userState.userActive);
+
+
+    useEffect(() => {
+        let userA = getLocalStorageUserActive();
+        dispatch(getUserActiveState(userA));
+    }, [dispatch]);
+
+    useEffect(() => {
+        console.log(userActive);
+    }, [userActive]);
+
+    return (
+        <Switch>
+            <Route path="/auth" children={<Auth/>}/>
+            <Route path="/home" children={<Home/>}/>
+            <Redirect to="auth"/>
+        </Switch>
+    );
 }
 
 export default App;
+
+{/*<ProtectedRoute*/}
+{/*    isAuthenticated={!!userActive && !!token}*/}
+{/*    userTypes={userActive?.user_type}*/}
+{/*    redirectPath="/auth"*/}
+{/*    path="/admin"*/}
+{/*    component={Admin}*/}
+{/*/>*/}

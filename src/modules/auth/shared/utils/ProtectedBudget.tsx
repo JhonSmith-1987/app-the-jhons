@@ -17,6 +17,6 @@ const ProtectedRoute: React.FC<IProtectedRouteProps> = ({
         console.log(isAuthenticated);
         return <Redirect to={redirectPath}/>
     }
-    return userTypes === 'admin' ? <Route {...res} /> : <Redirect to={redirectPath} />
+    return userTypes === 'budget' ? <Route {...res} /> : <Redirect to={redirectPath} />
 }
 export default ProtectedRoute;

@@ -1,51 +1,60 @@
-import {AuthStyled} from "./AuthStyled";
-import {useForm} from "react-hook-form";
-import {AuthModel, PostAuthModel} from "../../../domain/models/AuthModel";
-import {useAppSelector} from "../../../../Utils/Hooks";
+import {AdminStyled} from "./AdminStyled";
 import {useState} from "react";
-import {authMethod} from "../../../shared/utils/AuthMethod";
+import {Link, Route, Switch} from "react-router-dom";
+import CreatePermissions from "../../../Components/CreatePermissions/CreatePermissions";
+import ShowPermissions from "../../../Components/ShowPermissions/ShowPermissions";
 
+type dropdownType = 'permissions' | 'users' | '';
+export default function Admin(): JSX.Element {
 
-export default function Auth(): JSX.Element {
-
-
-    const [isLoadingAuthLogin, setIsLoadingAuthLogin] = useState<boolean>(false);
-    const users = useAppSelector((state) => state.userState.users);
-    const {register, handleSubmit, formState: {errors}, reset} = useForm<AuthModel>();
-
-    function authSession(data: AuthModel) {
-        let resData:PostAuthModel = {
-            'email': data.email,
-            'password': data.password
-        }
-        setIsLoadingAuthLogin(true);
-        authMethod(resData).then(r => {
-            setIsLoadingAuthLogin(false);
-        })
+    const [showDropDawn, setShowDropDawn] = useState<boolean>(false);
+    const [typeDropdawn, setTypeDropdawn] = useState<dropdownType>('')
+    function handleShowDropdown(dataButton: dropdownType) {
+        setTypeDropdawn(dataButton);
+        setShowDropDawn(!showDropDawn);
     }
 
-    const onSubmitAuth = (data:AuthModel) => authSession(data);
-
     return (
-        <AuthStyled>
-            {!isLoadingAuthLogin && (
-                <form onSubmit={handleSubmit(onSubmitAuth)}>
-                    <input {...register("email")} type="email" placeholder="email"/>
-                    <input {...register("password")} type="password" placeholder="password"/>
-                    <input {...register("confirm_password")} type="password" placeholder="repeat password"/>
-                    <input type="submit" value="Ingresar"/>
-                </form>
-            )}
-            {isLoadingAuthLogin && (
-                <div>Esta buscando datos</div>
-            )}
-            {users && users.map((user) => (
-                <div key={user.id}>
-                    <p>{user.name}</p>
-                    <p>{user.email}</p>
-                    <p>{user.user_type}</p>
+        <AdminStyled>
+            <div className="container-sidebar">
+                <h3>Panel de administración</h3>
+                <div className="sidebar-admin">
+                    <div className="container-button">
+                        <span
+                            onClick={() => handleShowDropdown('permissions')}
+                            className={showDropDawn && typeDropdawn === 'permissions' ? 'title-link-selected' : 'title-link'}
+                        >Permisos</span>
+                        {showDropDawn && typeDropdawn === 'permissions' &&
+                            <div className="dropdawn">
+                                <Link to="/home/admin/create-permissions">Crear perisos</Link>
+                                <Link to="/home/admin/permissions">Permisos</Link>
+                                <span>contenido link</span>
+                                <span>contenido link</span>
+                            </div>
+                        }
+                    </div>
+                    <div className="container-button">
+                        <span
+                            onClick={() => handleShowDropdown('users')}
+                            className={showDropDawn && typeDropdawn === 'users' ? 'title-link-selected' : 'title-link'}
+                        >Usuarios</span>
+                        {showDropDawn && typeDropdawn === 'users' &&
+                            <div className="dropdawn">
+                                <span>contenido link</span>
+                                <span>contenido link</span>
+                                <span>contenido link</span>
+                                <span>contenido link</span>
+                            </div>
+                        }
+                    </div>
                 </div>
-            ))}
-        </AuthStyled>
+            </div>
+            <div className="content-admin">
+                <Switch>
+                    <Route path="/home/admin/create-permissions" children={<CreatePermissions/>}/>
+                    <Route path="/home/admin/permissions" children={<ShowPermissions/>}/>
+                </Switch>
+            </div>
+        </AdminStyled>
     );
 }
